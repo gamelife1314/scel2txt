@@ -4,3 +4,9 @@
 .settings
 .pydevproject
 carevenv
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/scel2mmseg.iml
+.idea/workspace.xml
+dict.txt
