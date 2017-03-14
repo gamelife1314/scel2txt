@@ -25,7 +25,12 @@ def __read_utf16_str(open_file, offset=-1, read_len=2):
 
 def __read_unit16(open_file):
     assert isinstance(open_file, BufferedReader)
-    return struct.unpack('<H', open_file.read(2))[0]
+    try:
+        return struct.unpack('<H', open_file.read(2))[0]
+    except struct.error:
+        pass
+        # return struct.unpack('<H', open_file.read(2))[0]
+        # struct.error: unpack requires a bytes object of length 2
 
 
 def transform(source_file_or_dir):
@@ -48,9 +53,8 @@ def transform(source_file_or_dir):
 
     for file in files:
         file_size = os.path.getsize(file)
-        try:
-            with open(file, "rb") as f:
-
+        with open(file, "rb") as f:
+            try:
                 hz_offset = 0
                 mask = struct.unpack('128B', f.read(128))[4]
                 if mask == 0x44:
@@ -92,9 +96,13 @@ def transform(source_file_or_dir):
                         word_str = __read_utf16_str(f, -1, word_len)
                         f.read(12)
                         yield word_str
-        except KeyError:
-            # 这里不知道为什么会爆这个错误
-            pass
+            except KeyError:
+                pass
+            except struct.error:
+                # 求大神指针错误
+                # mask = struct.unpack('128B', f.read(128))[4]
+                # struct.error: unpack requires a bytes object of length 128
+                pass
 
 
 def transform_and_save(source_file_or_dir, target_file):
