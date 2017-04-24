@@ -21,7 +21,3 @@
     ```python
        transform_and_save("./", "./dict.txt")
     ```
-
-### 敬请大神指针错误
-
-
